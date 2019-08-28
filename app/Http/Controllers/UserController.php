@@ -25,13 +25,16 @@ class UserController extends Controller
             $i++;
         }
         return $pin;
-    }   
+    }
+    #call views function
     public function ShowForm(){
         return view('form');
     }
     public function ShowValidate(){
         return view('validate');
     }
+    #end call views
+    
     public function register(RequestUser $request){
         #validate request for register user
         $request->validate();
@@ -48,6 +51,10 @@ class UserController extends Controller
     }
     public function validate(Request $request){
         #code form validation 2fa
+        $rules = [
+            'pin' => 'required|min:0000|max:9999|numeric'
+        ];
+        $this->validate($request,$rules);
         if(!empty($request->pin) && session::get('pin')==$request->pin){
             $this->user::where('id', session::get('id'))->update(array('phone_verified_at' => Carbon\Carbon::now()));
             return redirect('/');

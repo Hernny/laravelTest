@@ -25,6 +25,7 @@ class RequestUser extends FormRequest
     {
         return [
             'name' => ['required', 'string','regex:^[a-zA-Z]+$'],
+            'rut' => ['required','string','regex:^(\d{1,3}(?:\.\d{1,3}){2}-[\dkK])$'],
             'phone' => ['required','numeric','size:11'],
             'address_address' => ['required', 'string'],
             'address_latitude' => ['required', 'double'],
