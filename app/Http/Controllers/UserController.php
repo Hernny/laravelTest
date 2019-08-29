@@ -38,7 +38,12 @@ class UserController extends Controller
     public function register(RequestUser $request){
         #validate request for register user
         $request->validate();
-        $this->user = User::create($request::all());
+        $input = $request::all();
+        $location = \Location::get($request->ip);
+        $input->address_address=$location->regionName.$location->cityName.$location->countryName;
+        $input->address_latitude=$location->latitude;
+        $input->address_longitude=$location->longitude;
+        $this->user = User::create($input);
         session(['id'=>$this->user->id,'pin'=> $this->GeneratePin()]);
         #send sms
         Nexmo::message()->send([
