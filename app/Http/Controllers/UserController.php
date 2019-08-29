@@ -37,15 +37,16 @@ class UserController extends Controller
     
     public function register(RequestUser $request){
         #validate request for register user
-        $request->validate();
-        $input = $request::all();
+        
+        $request->validated();
+        $input = $request->all();
         #get location from ip adress
         $location = \Location::get($request->ip);
         #create string address
-        $input->address_address=$location->regionName.$location->cityName.$location->countryName;
+        $input['address_address']=$location->regionName.$location->cityName.$location->countryName;
         #get lat and log
-        $input->address_latitude=$location->latitude;
-        $input->address_longitude=$location->longitude;
+        $input['address_latitude']=$location->latitude;
+        $input['address_longitude']=$location->longitude;
         #create user
         $this->user = User::create($input);
         session(['id'=>$this->user->id,'pin'=> $this->GeneratePin()]);
@@ -53,10 +54,10 @@ class UserController extends Controller
         Nexmo::message()->send([
             'to'   => $this->user->phone,
             'from' => 'test',
-            'text' => 'test Pin Code Verification:'.$user->pin
+            'text' => 'test Pin Code Verification:'.$this->user->pin
         ]);
         #redirect to validate form
-        return redirect('ShowValidate');
+        redirect('ShowValidate');
     }
     public function validate(Request $request){
         #code form validation 2fa

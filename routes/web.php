@@ -10,6 +10,6 @@
 |
 */
 Route::get('/', 'UserController@ShowForm');
-Route::get('/success', 'UserController@ShowValidate');
-Route::post('/register','UserController@register');
-Route::post('/validate','UserController@validate');
+Route::get('success', 'UserController@ShowValidate');
+Route::post('register','UserController@register');
+#Route::post('/validate','UserController@validate');
