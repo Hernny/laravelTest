@@ -39,10 +39,14 @@ class UserController extends Controller
         #validate request for register user
         $request->validate();
         $input = $request::all();
+        #get location from ip adress
         $location = \Location::get($request->ip);
+        #create string address
         $input->address_address=$location->regionName.$location->cityName.$location->countryName;
+        #get lat and log
         $input->address_latitude=$location->latitude;
         $input->address_longitude=$location->longitude;
+        #create user
         $this->user = User::create($input);
         session(['id'=>$this->user->id,'pin'=> $this->GeneratePin()]);
         #send sms
