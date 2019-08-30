@@ -51,15 +51,19 @@ class UserController extends Controller
         $this->user = User::create($input);
         session(['id'=>$this->user->id,'pin'=> $this->GeneratePin()]);
         #send sms
-        Nexmo::message()->send([
-            'to'   => $this->user->phone,
-            'from' => 'test',
-            'text' => 'test Pin Code Verification:'.$this->user->pin
-        ]);
+        try {
+            Nexmo::message()->send([
+                'to'   => $this->user->phone,
+                'from' => 'test',
+                'text' => 'test Pin Code Verification:'.$this->user->pin
+            ]);
+        } catch (\Throwable $th) {
+            return Redirect::back()->withErrors(['msg', 'an error occurred while sending verification pin']);
+        }
         #redirect to validate form
-        redirect('ShowValidate');
+        return redirect('success');
     }
-    public function validate(Request $request){
+    public function validatepin(Request $request){
         #code form validation 2fa
         $rules = [
             'pin' => 'required|min:0000|max:9999|numeric'
